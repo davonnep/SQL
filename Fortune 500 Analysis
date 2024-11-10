@@ -1,0 +1,35 @@
+-- Reviewing everything in the table fortune_companies
+SELECT *
+FROM fortune_companies;
+
+-- Can you help review every company by revenue and the industry they are in?
+SELECT company_name,industry, revenue,
+CASE WHEN revenue >= 500 THEN "Highest revenue margins"
+WHEN revenue >= 300 THEN "Medium revenue margins"
+WHEN revenue >= 100 THEN "Lowest revenue margins"
+ELSE "Needs improvements"
+END AS revenue_evaluation
+FROM fortune_companies
+ORDER by revenue desc;
+
+-- How would you list the industries by revenue, from highest to lowest, for those with a total revenue exceeding 1000?
+SELECT industry, ROUND(SUM(revenue)) AS total_revenue
+FROM fortune_companies
+GROUP BY industry
+HAVING total_revenue >= 1000
+ORDER BY total_revenue desc;
+
+-- A job seeker is looking for a job suitable for her. Could you provide a list of companies with eligible healthcare benefits with at least 20 PTO?
+SELECT company_name, industry, 
+CASE WHEN healthcare_benefits = 1 THEN "Eligible"
+END AS healthcare_benefits, paid_time_off_days
+FROM fortune_companies
+WHERE healthcare_benefits=1
+AND paid_time_off_days >= 20
+ORDER by paid_time_off_days desc;
+
+-- How many companies are in each industry?
+SELECT industry, Count(*) AS total_companies
+FROM fortune_companies
+GROUP BY industry
+ORDER BY total_companies desc;
