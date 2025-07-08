@@ -1,0 +1,77 @@
+--Climate Conference Project
+--Database: https://www.db-fiddle.com/f/pxMci1sLL945KHKYvpe9W6/1
+
+--Query SQL
+--[LEFT JOIN] List the ids and names of the vips who received a dinner rsvp.
+SELECT vips.member_id,
+vips.last_name,
+vips.first_name
+FROM vips
+LEFT JOIN reservations resv
+ON vips.member_id = resv.member_id
+
+WHERE dinner_rsvp = true;
+
+--[INNER JOIN] What event did the vips attend?
+SELECT vips.last_name,
+vips.first_name,
+vips.event,
+ev.event_name,
+ev.event_type
+FROM vips
+
+INNER JOIN events ev
+ON vips.event = ev.event_id
+
+ORDER BY event;
+
+--[Multiple JOINs] What hotel reservations did the vip members book?
+SELECT vips.member_id,
+vips.last_name,
+vips.first_name,
+hotel.hotel_name AS "Hotel Reserved",
+hotel.address
+FROM vips
+LEFT JOIN reservations resv
+ON vips.member_id = resv.member_id
+
+LEFT JOIN hotels hotel
+ON resv.hotel = hotel.hotel_id;
+
+-- [SELF JOIN] Can you show me a query that lists each VIP’s first and last name, along with the first and last names of the other VIPs they’ve given feedback to?
+
+SELECT reviewer.member_id,
+reviewer.last_name,
+reviewer.first_name,
+reviewer.provides_feedback_to AS peer_memberid,
+peer.last_name AS peer_lastname,
+peer.first_name AS peer_firstname
+FROM vips AS reviewer
+INNER JOIN vips peer
+ON reviewer.provides_feedback_to = peer.member_id;
+
+--[QUERY WITHIN SUBQUERY] Please provide a list of vip's member id with full name and their association who are in a education or research type.
+SELECT member_id,
+last_name,
+first_name,
+association,
+assoc_type
+FROM vips
+WHERE assoc_type IN('education', 'research')
+ORDER BY assoc_type;
+
+--[QUERY WITHIN SUBQUERY] Please provide a list of vip's full name who are in Hilton or Marriott
+SELECT v.member_id,
+v.last_name,
+v.first_name,
+hotels.hotel_name
+FROM vips v
+
+INNER JOIN reservations res
+ON v.member_id = res.member_id
+
+INNER JOIN hotels
+ON res.hotel = hotels.hotel_id
+
+WHERE hotels.hotel_name IN ('Hyatt Downtown', 'Marriott')
+ORDER BY res.hotel;
